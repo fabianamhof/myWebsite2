@@ -2,20 +2,22 @@
 interface Props {
     text: string;
     delay?: number,
+    speed?: number,
+    infinite?: boolean
 }
 
-const { text, delay = 0 } = Astro.props;
+const { text, delay = 0, speed = 1, infinite = false} = Astro.props;
 ---
 <span
-    class="type" style={`--n:${text.length}; animation-delay:${delay}ms; opacity: 0`} set:html={text}
+    class="type" style={`--n:${text.length}; --speed:${speed}; animation-delay:${delay}ms; opacity: 0; animation-iteration-count: ${infinite ? 'infinite' : 1}`} set:html={text}
 >
 </span>
 <style>
 .type {
   font-family: monospace;
-  color:#0000;
+  color: rgb(var(--textColor) / 0);
   background:
-    linear-gradient(-90deg, rgb(var(--textColor)), 5px,#0000 0) 10px 0,
+    linear-gradient(-90deg, rgb(var(--textColor)), 5px, rgb(var(--textColor) / 0) 0) 10px 0,
     linear-gradient(rgb(var(--textColor)) 0 0) 0 0;
   background-size:calc(var(--n)*1ch) 200%;
   -webkit-background-clip:padding-box,text;
@@ -23,7 +25,7 @@ const { text, delay = 0 } = Astro.props;
   background-repeat:no-repeat;
   animation: 
     b .7s infinite steps(1),   
-    t calc(var(--n)*.1s) steps(var(--n)) forwards,
+    t calc(var(--n)*var(--speed)*.1s) steps(var(--n)) forwards,
     fadeIn .0s steps(1) forwards;
 }
 @keyframes t{

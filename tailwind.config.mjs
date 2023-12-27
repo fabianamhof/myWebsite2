@@ -10,7 +10,7 @@ export default {
 				primaryColor: 'rgb(var(--primaryColor) / <alpha-value>)',
 				textColor: 'rgb(var(--textColor) / <alpha-value>)',
 				highlightColor: 'rgb(var(--highlightColor) / <alpha-value>)',
-				accentColor: 'var(--accentColor) / <alpha-value>)',
+				accentColor: 'rgb(var(--accentColor) / <alpha-value>)',
 			},
 			keyframes: {
 				fadeIn: {
@@ -25,7 +25,7 @@ export default {
 			  },
 			animation: {
 				  fadeIn: 'fadeIn 1s ease-in-out forwards',
-				  fadeInOut: 'fadeInOut 2s  forwards',
+				  fadeInOut: 'fadeInOut 2s forwards',
 				  show: 'fadeIn 0s steps(1, end) forwards'
 			  }
 		},
