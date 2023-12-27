@@ -1,0 +1,35 @@
+---
+interface Props {
+    text: string;
+    delay?: number,
+}
+
+const { text, delay = 0 } = Astro.props;
+---
+<span
+    class="type" style={`--n:${text.length}; animation-delay:${delay}ms; opacity: 0`} set:html={text}
+>
+</span>
+<style>
+.type {
+  font-family: monospace;
+  color:#0000;
+  background:
+    linear-gradient(-90deg, rgb(var(--textColor)), 5px,#0000 0) 10px 0,
+    linear-gradient(rgb(var(--textColor)) 0 0) 0 0;
+  background-size:calc(var(--n)*1ch) 200%;
+  -webkit-background-clip:padding-box,text;
+  background-clip:padding-box,text;
+  background-repeat:no-repeat;
+  animation: 
+    b .7s infinite steps(1),   
+    t calc(var(--n)*.1s) steps(var(--n)) forwards,
+    fadeIn .0s steps(1) forwards;
+}
+@keyframes t{
+  from {background-size:0 200%}
+}
+@keyframes b{
+  50% {background-position:0 -100%,0 0}
+}
+</style>

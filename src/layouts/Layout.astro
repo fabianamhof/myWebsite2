@@ -1,0 +1,209 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body class="bg-backgroundColor text-textColor relative">
+		<canvas data-canvas class="h-full w-full bg-transparent absolute"></canvas>
+		<slot />
+	</body>
+</html>
+<script>
+const canvas = document.querySelector('[data-canvas]') as HTMLCanvasElement;
+canvas.width = document.body.clientWidth;
+canvas.height = document.body.clientHeight;
+const canvasCtx = canvas.getContext("2d")!;
+
+canvasCtx.translate(0, canvas.height);
+canvasCtx.scale(1, -1);
+
+
+type Cloud = Parameters<CanvasRenderingContext2D["arc"]>[];
+const clouds: Cloud[] = []
+for(let i = 0; i < 100; i++) {
+	clouds.push(getRandomCloud(i * 400 * (Math.random() * 0.2 + 0.8) + 300 , canvas.height - canvas.height * 0.3 * (Math.random() * 0.8 + 0.2)));
+}
+
+const landTop = canvas.height / 2;
+const trees: Cloud[] = [];
+for(let i = 0; i < canvas.width/30; i++) {
+	trees.push(getTree(i*30, landTop + 50 + (Math.random() * 20 - 10 )));
+}
+const landBottom = canvas.height / 4;
+const sandStart = landBottom + (landTop - landBottom) * 0.4;
+
+function draw() {
+	if (canvas && canvasCtx) {
+		canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+		drawMountains(canvasCtx);
+		drawClouds(canvasCtx);
+		// drawLand(canvasCtx);
+		// drawSea(canvasCtx);
+	}
+}
+draw();
+setInterval(() => {
+	draw();
+}, 20)
+
+
+function getRandomCloud(x: number, y: number, scale: number = Math.random() * 1 + 2): Cloud {
+	const cloud: Cloud = [
+		[x, y, 20 * scale, 0, Math.PI * 2],
+		[x + (Math.random() * 10 + 10) * scale, y - (Math.random() * 10 + 5) * scale, 20 * scale, 0, Math.PI * 2],
+		[x + (Math.random() * 10 + 20) * scale, y + (Math.random() * 10 + 5) * scale, 20 * scale, 0, Math.PI * 2],
+		[x + (Math.random() * 10 + 5) * scale, y + (Math.random() * 10 + 15) * scale, 20 * scale, 0, Math.PI * 2],
+		[x + (Math.random() * 10 + 15) * scale, y + (Math.random() * 10 + 10) * scale, 20 * scale, 0, Math.PI * 2],
+	]
+
+	return cloud;
+}
+
+function drawClouds(ctx: CanvasRenderingContext2D){
+	for(const cloud of clouds) {
+		moveCloud(cloud, 1);
+		if(cloud[0][0] < canvas.width) {
+			drawCloud(canvasCtx, cloud);
+		}
+	}
+}
+
+function drawCloud(ctx: CanvasRenderingContext2D, cloud: Cloud, color: string = "white") {
+	ctx.beginPath();
+	for(const circle of cloud) {
+		ctx.arc(...circle);
+	}
+	ctx.fillStyle = color
+	ctx.fill();
+}
+
+function moveCloud(cloud: Cloud, amount: number) {
+	for (const circle of cloud) {
+		circle[0] -= amount;
+	}
+}
+
+function drawMountains(ctx: CanvasRenderingContext2D){
+	const mountainsHeight = canvas.height / 8 * 3;
+	const mountainsBottom = canvas.height / 2;
+
+	ctx.beginPath();
+	ctx.moveTo(0, mountainsBottom);
+	ctx.lineTo(canvas.width / 4, mountainsHeight * 0.8 + mountainsBottom);
+	ctx.lineTo(canvas.width / 2, mountainsBottom);
+	ctx.rect(0, canvas.height / 4, canvas.width / 2, canvas.height / 4);
+	ctx.fillStyle = `rgb(${getComputedStyle(document.documentElement).getPropertyValue("--accentColor")})`;
+	ctx.fill();
+
+	ctx.beginPath();
+	ctx.moveTo(canvas.width / 2, mountainsBottom);
+	ctx.lineTo(canvas.width / 4 * 3,  mountainsHeight * 0.8 + mountainsBottom);
+	ctx.lineTo(canvas.width, mountainsBottom);
+	ctx.rect(canvas.width / 2, canvas.height / 4, canvas.width / 2, canvas.height / 4);
+	ctx.fillStyle = `rgb(${getComputedStyle(document.documentElement).getPropertyValue("--highlightColor")})`;
+	ctx.fill();
+	
+	ctx.beginPath();
+	ctx.moveTo(0, canvas.height / 4);
+	ctx.lineTo(canvas.width / 2,   mountainsHeight + mountainsBottom);
+	ctx.lineTo(canvas.width,  canvas.height / 4);
+	ctx.fillStyle = `rgb(${getComputedStyle(document.documentElement).getPropertyValue("--primaryColor")})`;
+	ctx.fill();
+	ctx.fillRect(0, 0, canvas.width, canvas.height / 4);
+
+}
+
+function drawLand(ctx: CanvasRenderingContext2D) {
+	ctx.beginPath();
+	ctx.rect(0, landBottom, canvas.width, landTop - landBottom);
+	ctx.fillStyle = "#7c4807";
+	ctx.fill();
+
+	const greenLandHeight = (landTop - landBottom)
+	ctx.beginPath();
+	ctx.rect(0, landBottom, canvas.width, greenLandHeight);
+	const greenGradient = ctx.createLinearGradient(0, landBottom, 0, landBottom + greenLandHeight);
+    greenGradient.addColorStop(0, '#41980a');
+    greenGradient.addColorStop(0.8, '#41980a');
+    greenGradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = greenGradient;
+	ctx.fill();
+
+	for (const tree of trees) {
+		drawTree(ctx, tree);
+	}
+
+	ctx.beginPath();
+	ctx.rect(0, 0, canvas.width, sandStart);
+	const sandGradient = ctx.createLinearGradient(0, landBottom, 0, sandStart);
+    sandGradient.addColorStop(0, '#f2d2a9');
+    sandGradient.addColorStop(0.9, '#f2d2a9');
+    sandGradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = sandGradient;
+	ctx.fill();
+}
+
+function getTree(x: number, y: number) {
+	const head: Cloud = [];
+
+	head.push([x, y, 20, 0, Math.PI * 2]);
+	head.push([x+10, y+10, 20, 0, Math.PI * 2]);
+	head.push([x-10, y-10, 20, 0, Math.PI * 2]);
+	head.push([x+10, y-10, 20, 0, Math.PI * 2]);
+	head.push([x-15, y+5, 20, 0, Math.PI * 2]);
+
+	return head;
+}
+
+function drawTree(ctx: CanvasRenderingContext2D, head: Cloud) {
+	const trunkHeight = 100;
+	const trunkWidth = 10;
+
+	ctx.beginPath();
+	ctx.fillStyle = "brown";
+	ctx.rect(head[0][0] - trunkWidth/2, head[0][1] - trunkHeight, trunkWidth, trunkHeight);
+	ctx.fill();
+
+	drawCloud(ctx, head, "green");
+}
+
+function drawSea(ctx: CanvasRenderingContext2D) {
+	ctx.beginPath();
+	ctx.arc(canvas.width / 2, landBottom - (landTop-landBottom)*0.5, canvas.width/2, 0, Math.PI)
+	ctx.rect(0, 0, canvas.width, landBottom - (landTop-landBottom)*0.5)
+	ctx.fillStyle = "lightblue"
+	ctx.fill();
+}
+</script>
+<style is:global>
+:root {
+	--backgroundColor: 235 248 255;
+	--primaryColor: 105 153 93;
+	--textColor: 38 61 66;
+	--highlightColor: 146 55 77;
+	--accentColor: 231 111 81;
+}
+
+html {
+	font-family: system-ui, sans-serif;
+	background-size: 224px;
+}
+
+body {
+	margin: 0;
+}
+</style>

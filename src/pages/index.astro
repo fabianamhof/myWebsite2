@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Typing from '../components/Typing.astro';
+---
+
+<Layout title="Welcome to Astro.">
+	<main>
+		<div class="h-screen w-screen p-5 relative border">
+			<div class="text-center h-full w-full flex flex-col items-center justify-center" style="background: radial-gradient(farthest-side, rgba(255, 255, 255, 1), transparent)">
+				<div class="flex flex-col items-center justify-center">
+					<img class="rounded-full mx-auto h-32 w-32 shadow-2xl" src="/fabian.jpg">
+					<h1><Typing text="Hi there. I'm Fabian."/></h1>
+					<h2>
+						<Typing delay={2000} text="Great to see you. <br> Scroll down to get to know me a little better." />
+					</h2>
+				</div>
+				<span class="opacity-0 animate-fadeIn animation-delay-[4000ms]">
+					<button class="bg-primaryColor rounded-full h-12 md:h-20 w-12 md:w-20 animate-bounce absolute bottom-2 shadow">&DownArrow;</button>
+				</span>
+			</div>
+		</div>
+		<div class="h-screen w-screen p-5 relative border">
+			<div class="text-center h-full w-full flex flex-col items-center justify-center">
+				<div class="flex flex-col items-center justify-center">
+					<img class="rounded-full mx-auto h-32 w-32 shadow-2xl" src="/fabian.jpg">
+					<h1><Typing text="Hi there. I'm Fabian."/></h1>
+					<h2>
+						<Typing delay={2000} text="Great to see you. <br> Scroll down to get to know me a little better." />
+					</h2>
+				</div>
+				<span class="opacity-0 animate-fadeIn animation-delay-[4000ms]">
+					<button class="bg-primaryColor rounded-full h-12 md:h-20 w-12 md:w-20 animate-bounce absolute bottom-2 shadow">&DownArrow;</button>
+				</span>
+			</div>
+		</div>
+		<div class="h-screen w-screen p-5 relative border">
+			<div class="text-center h-full w-full flex flex-col items-center justify-center">
+				<div class="flex flex-col items-center justify-center">
+					<img class="rounded-full mx-auto h-32 w-32 shadow-2xl" src="/fabian.jpg">
+					<h1><Typing text="Hi there. I'm Fabian."/></h1>
+					<h2>
+						<Typing delay={2000} text="Great to see you. <br> Scroll down to get to know me a little better." />
+					</h2>
+				</div>
+			</div>
+		</div>
+		<div class="h-screen w-screen p-5 relative border">
+			<div class="text-center h-full w-full flex flex-col items-center justify-center">
+				<div class="flex flex-col items-center justify-center">
+					<img class="rounded-full mx-auto h-32 w-32 shadow-2xl" src="/fabian.jpg">
+					<h1><Typing text="Hi there. I'm Fabian."/></h1>
+					<h2>
+						<Typing delay={2000} text="Great to see you. <br> Scroll down to get to know me a little better." />
+					</h2>
+				</div>
+				<span class="opacity-0 animate-fadeIn animation-delay-[4000ms]">
+					<button class="bg-primaryColor rounded-full h-12 md:h-20 w-12 md:w-20 animate-bounce absolute bottom-2 shadow">&DownArrow;</button>
+				</span>
+			</div>
+		</div>
+	</main>
+</Layout>
+<style>
+	main {
+		font-size: 20px;
+		line-height: 1.6;
+	}
+
+	h1 {
+		@apply text-5xl p-5;
+	}
+
+	h2 {
+		@apply text-3xl p-3;
+	}
+</style>
